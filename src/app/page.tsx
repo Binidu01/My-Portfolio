@@ -472,7 +472,7 @@ export default function ModernPortfolio() {
   const [titleIndex, setTitleIndex] = useState(0);
   const [displayTitle, setDisplayTitle] = useState("");
 
-  const activeSection = useScrollspy(["hero", "about", "skills", "projects", "education", "contact"]);
+  const activeSection = useScrollspy(["home", "about", "skills", "projects", "education", "contact"]);
   const scrollY = useParallax();
 
   // Typing animation
@@ -534,7 +534,7 @@ export default function ModernPortfolio() {
         <BackToTop />
 
         {/* Hero Section (z-index 20) */}
-        <section id="hero" className="min-h-screen flex items-center justify-center relative px-4 z-20">
+        <section id="home" className="min-h-screen flex items-center justify-center relative px-4 z-20">
 
           <div className="text-center relative z-10 max-w-6xl mx-auto">
             {avatarUrl && (
