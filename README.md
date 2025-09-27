@@ -45,10 +45,10 @@ This repository holds the source code for my professional portfolio website, sho
 ### Quick Start
 ```bash
 # Clone the repository
-git clone undefined.git
+git clone https://github.com/Binidu01/My-Portfolio.git
 
 # Navigate to project directory
-cd undefined
+cd My-Portfolio
 
 # Install dependencies
 npm install
