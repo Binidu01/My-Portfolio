@@ -139,7 +139,14 @@ function Starfield() {
         };
     }, [initStars]);
 
-    return <canvas ref={canvasRef} className="fixed inset-0 opacity-80 pointer-events-none z-0" />;
+    return <canvas ref={canvasRef} className="fixed inset-0 opacity-80 pointer-events-none z-0" style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 0
+    }} />;
 }
 
 // Navigation
@@ -264,7 +271,10 @@ export default function Portfolio() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 text-white relative overflow-hidden">
+        <div className="min-h-screen text-white relative" style={{
+            background: 'linear-gradient(135deg, #111827 0%, #1e3a8a 50%, #581c87 100%)',
+            minHeight: '100vh'
+        }}>
             <Starfield />
             <Navigation activeSection={activeSection} />
 
