@@ -172,13 +172,29 @@ function Navigation({ activeSection }: { activeSection: string }) {
     if (!isVisible) return null;
 
     return (
-        <nav className="fixed top-8 left-1/2 -translate-x-1/2 z-50 bg-white/10 backdrop-blur-md rounded-full px-6 py-3 border border-white/20">
-            <div className="flex space-x-1">
+        <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-white/10 backdrop-blur-md rounded-full px-2 sm:px-4 md:px-6 py-2 sm:py-3 border border-white/20 max-w-[95vw] overflow-hidden">
+            <div
+                className="flex space-x-0.5 sm:space-x-1 overflow-x-auto"
+                style={{
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                    WebkitOverflowScrolling: 'touch'
+                }}
+                onScroll={(e) => {
+                    const target = e.target as HTMLElement;
+                    target.style.setProperty('-webkit-scrollbar', 'none');
+                }}
+            >
+                <style jsx>{`
+                    div::-webkit-scrollbar {
+                        display: none;
+                    }
+                `}</style>
                 {sections.map(section => (
                     <button
                         key={section}
                         onClick={() => scrollTo(section)}
-                        className={`px-3 py-2 rounded-full text-sm font-medium transition-all ${
+                        className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
                             activeSection === section ? "bg-blue-500 text-white" : "text-gray-300 hover:text-white hover:bg-white/10"
                         }`}
                     >
@@ -272,7 +288,6 @@ export default function Portfolio() {
                 const [userData, reposData] = await Promise.all([userRes.json(), reposRes.json()]);
                 if (userData?.avatar_url) setAvatarUrl(`${userData.avatar_url}?s=460`);
                 if (Array.isArray(reposData)) {
-                    // Corrected type casting
                     const filteredRepos = (reposData as GitHubRepo[]).filter(r => !r.fork && !r.archived)
                         .sort((a, b) => b.stargazers_count - a.stargazers_count);
                     setRepos(filteredRepos);
@@ -366,7 +381,6 @@ export default function Portfolio() {
                             <div className="lg:col-span-2">
                                 <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">My Mission</h3>
                                 <p className="text-lg leading-relaxed text-gray-200 mb-8">{CONFIG.bio}</p>
-                                {/* Corrected unescaped entities */}
                                 <p className="text-md leading-relaxed text-gray-400 border-l-4 border-blue-500 pl-4 italic">
                                     &ldquo;The best way to predict the future is to create it. I focus on developing sustainable, high-performance solutions that scale with user demand.&rdquo;
                                 </p>
@@ -514,8 +528,7 @@ export default function Portfolio() {
             </Section>
 
             {/* --- Contact Section --- */}
-            {/* Corrected unescaped entity */}
-            <Section id="contact" title="Let&apos;s Connect" icon={<Mail size={28} />} className="bg-black/20 relative z-20">
+            <Section id="contact" title="Let's Connect" icon={<Mail size={28} />} className="bg-black/20 relative z-20">
                 <div className="max-w-4xl mx-auto">
                     <p className="text-xl text-center text-gray-300 mb-12">Ready to collaborate? Let&apos;s build something amazing together!</p>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
