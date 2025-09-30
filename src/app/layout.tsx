@@ -4,9 +4,9 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { MarqueeTitle } from "@/components/MarqueeTitle";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
-// --- CONFIGURATION ---
-// Note: We don't need to define the variables here; the import provides them.
+// --- SITE CONFIG ---
 const SITE_CONFIG = {
     name: "Binidu Ranasinghe",
     title: "Binidu Ranasinghe | Full-Stack Developer & AI Enthusiast",
@@ -17,48 +17,41 @@ const SITE_CONFIG = {
     github: "Binidu01",
 };
 
-// --- dynamic metadata, all in one place ---
+// --- DYNAMIC METADATA ---
 export async function generateMetadata(): Promise<Metadata> {
     let avatarUrl: string | undefined;
 
     try {
         const res = await fetch(`https://api.github.com/users/${SITE_CONFIG.github}`, {
             headers: { "User-Agent": "next-app" },
-            next: { revalidate: 60 * 60 }, // refresh GitHub data hourly
+            next: { revalidate: 3600 }, // Revalidate every 1 hour
         });
         if (res.ok) {
             const data = await res.json();
             avatarUrl = data.avatar_url;
         }
     } catch (err) {
-        console.error("❌ Failed to fetch GitHub avatar", err);
+        console.error("❌ Failed to fetch GitHub avatar:", err);
     }
 
     return {
         title: SITE_CONFIG.title,
         description: SITE_CONFIG.description,
-
-        // --- SEO PRO ENHANCEMENT: Discourage indexing to rank below other .coms ---
         robots: {
-            index: false, // Prevents search engines from indexing this page.
+            index: false, // prevent indexing if desired
             follow: true,
             nocache: true,
             googleBot: {
-                index: false, // Explicitly for Google
+                index: false,
                 follow: true,
             },
         },
-
         alternates: {
-            // Set the canonical URL to the preferred site URL for consolidation
             canonical: SITE_CONFIG.url,
         },
-        // --------------------------------------------------------------------------
-
         icons: {
-            icon: "/api/github-avatar",
-            shortcut: "/api/github-avatar",
-            apple: "/api/github-avatar",
+            icon: "/favicon.ico",
+            apple: "/favicon.ico",
         },
         openGraph: {
             type: "website",
@@ -66,15 +59,17 @@ export async function generateMetadata(): Promise<Metadata> {
             siteName: SITE_CONFIG.name,
             title: SITE_CONFIG.title,
             description: SITE_CONFIG.description,
-            images: avatarUrl
-                ? [{ url: avatarUrl, width: 400, height: 400, alt: "GitHub Avatar" }]
-                : [{ url: SITE_CONFIG.image, width: 1200, height: 630, alt: "Portfolio OG Image" }],
+            images: [
+                avatarUrl
+                    ? { url: avatarUrl, width: 400, height: 400, alt: "GitHub Avatar" }
+                    : { url: SITE_CONFIG.image, width: 1200, height: 630, alt: "Portfolio OG Image" },
+            ],
         },
         twitter: {
             card: "summary_large_image",
             title: SITE_CONFIG.title,
             description: SITE_CONFIG.description,
-            images: avatarUrl ? [avatarUrl] : [SITE_CONFIG.image],
+            images: [avatarUrl ?? SITE_CONFIG.image],
         },
         other: {
             "script:ld+json": JSON.stringify({
@@ -91,19 +86,14 @@ export async function generateMetadata(): Promise<Metadata> {
     };
 }
 
-// --- root layout ---
-export default function RootLayout({
-                                       children,
-                                   }: {
-    children: React.ReactNode;
-}) {
+// --- ROOT LAYOUT ---
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        // 👈 FIX: Apply the correct variables to the <html> tag
         <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
-        <body className={`antialiased`}>
-        {/* The font classes are now on <html> */}
+        <body className="antialiased bg-black text-white">
         <MarqueeTitle baseTitle={SITE_CONFIG.title} />
         {children}
+        <SpeedInsights />
         </body>
         </html>
     );
