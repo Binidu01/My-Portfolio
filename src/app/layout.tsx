@@ -6,7 +6,7 @@ import "./globals.css";
 import { MarqueeTitle } from "@/components/MarqueeTitle";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-// --- SITE CONFIG ---
+// --- CONFIGURATION ---
 const SITE_CONFIG = {
     name: "Binidu Ranasinghe",
     title: "Binidu Ranasinghe | Full-Stack Developer & AI Enthusiast",
@@ -17,41 +17,48 @@ const SITE_CONFIG = {
     github: "Binidu01",
 };
 
-// --- DYNAMIC METADATA ---
+// --- dynamic metadata, all in one place ---
 export async function generateMetadata(): Promise<Metadata> {
     let avatarUrl: string | undefined;
 
     try {
         const res = await fetch(`https://api.github.com/users/${SITE_CONFIG.github}`, {
             headers: { "User-Agent": "next-app" },
-            next: { revalidate: 3600 }, // Revalidate every 1 hour
+            next: { revalidate: 60 * 60 }, // refresh GitHub data hourly
         });
         if (res.ok) {
             const data = await res.json();
             avatarUrl = data.avatar_url;
         }
     } catch (err) {
-        console.error("❌ Failed to fetch GitHub avatar:", err);
+        console.error("❌ Failed to fetch GitHub avatar", err);
     }
 
     return {
         title: SITE_CONFIG.title,
         description: SITE_CONFIG.description,
+
+        // --- SEO PRO ENHANCEMENT: Discourage indexing to rank below other .coms ---
         robots: {
-            index: false,
+            index: false, // Prevents search engines from indexing this page.
             follow: true,
             nocache: true,
             googleBot: {
-                index: false,
+                index: false, // Explicitly for Google
                 follow: true,
             },
         },
+
         alternates: {
+            // Set the canonical URL to the preferred site URL for consolidation
             canonical: SITE_CONFIG.url,
         },
+        // --------------------------------------------------------------------------
+
         icons: {
-            icon: "/favicon.ico",
-            apple: "/favicon.ico",
+            icon: "/api/github-avatar",
+            shortcut: "/api/github-avatar",
+            apple: "/api/github-avatar",
         },
         openGraph: {
             type: "website",
@@ -59,17 +66,15 @@ export async function generateMetadata(): Promise<Metadata> {
             siteName: SITE_CONFIG.name,
             title: SITE_CONFIG.title,
             description: SITE_CONFIG.description,
-            images: [
-                avatarUrl
-                    ? { url: avatarUrl, width: 400, height: 400, alt: "GitHub Avatar" }
-                    : { url: SITE_CONFIG.image, width: 1200, height: 630, alt: "Portfolio OG Image" },
-            ],
+            images: avatarUrl
+                ? [{ url: avatarUrl, width: 400, height: 400, alt: "GitHub Avatar" }]
+                : [{ url: SITE_CONFIG.image, width: 1200, height: 630, alt: "Portfolio OG Image" }],
         },
         twitter: {
             card: "summary_large_image",
             title: SITE_CONFIG.title,
             description: SITE_CONFIG.description,
-            images: [avatarUrl ?? SITE_CONFIG.image],
+            images: avatarUrl ? [avatarUrl] : [SITE_CONFIG.image],
         },
         other: {
             "script:ld+json": JSON.stringify({
@@ -86,24 +91,19 @@ export async function generateMetadata(): Promise<Metadata> {
     };
 }
 
-// --- ROOT LAYOUT ---
+// --- root layout ---
 export default function RootLayout({
-                                       children,
-                                   }: {
+    children,
+}: {
     children: React.ReactNode;
 }) {
     return (
         <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
-        <body className="antialiased bg-black text-white">
-        {/* Site Title Animation */}
-        <MarqueeTitle baseTitle={SITE_CONFIG.title} />
-
-        {/* Main Page Content */}
-        {children}
-
-        {/* ✅ Correctly placed Speed Insights component */}
-        <SpeedInsights />
-        </body>
+            <body className={`antialiased`}>
+                <MarqueeTitle baseTitle={SITE_CONFIG.title} />
+                {children}
+                <SpeedInsights />
+            </body>
         </html>
     );
 }
