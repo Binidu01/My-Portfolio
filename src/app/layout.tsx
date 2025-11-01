@@ -34,26 +34,20 @@ export async function generateMetadata(): Promise<Metadata> {
         console.error("❌ Failed to fetch GitHub avatar", err);
     }
 
-return {
-title: SITE_CONFIG.title,
-description: SITE_CONFIG.description,
+    return {
+        title: SITE_CONFIG.title,
+        description: SITE_CONFIG.description,
 
-```
-// --- SEO PRO ENHANCEMENT: Always allow indexing ---
-robots: {
-    index: true,       // Always index this page
-    follow: true,
-    nocache: false,
-    googleBot: {
-        index: true,  // Google can index
-        follow: true,
-    },
-},
-
-alternates: {
-    // Set the canonical URL to the preferred site URL for consolidation
-    canonical: SITE_CONFIG.url,
-},
+        // --- SEO PRO ENHANCEMENT: Discourage indexing to rank below other .coms ---
+        robots: {
+            index: true, // Prevents search engines from indexing this page.
+            follow: true,
+            nocache: true,
+            googleBot: {
+                index: true, // Explicitly for Google
+                follow: true,
+            },
+        },
 ```
 
         // --------------------------------------------------------------------------
