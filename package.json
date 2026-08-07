@@ -1,0 +1,50 @@
+{
+  "name": "portfolio",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite --host --open",
+    "build": "tsc --noEmit && vite build",
+    "export": "vite build --mode export",
+    "start": "bini-server",
+    "preview": "vite preview --host --open",
+    "deploy": "bini-deploy",
+    "type-check": "tsc --noEmit",
+    "lint": "oxlint src",
+    "format": "oxfmt src",
+    "check": "oxlint src && oxfmt src && tsc --noEmit"
+  },
+  "dependencies": {
+    "bini-overlay": "latest",
+    "bini-router": "latest",
+    "bini-server": "latest",
+    "framer-motion": "^12.43.0",
+    "hono": "latest",
+    "lucide-react": "^1.28.0",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "latest",
+    "react-syntax-highlighter": "^16.1.1",
+    "rehype-raw": "^7.0.0",
+    "rehype-sanitize": "^6.0.0",
+    "remark-gfm": "^4.0.1",
+    "simple-icons": "^16.28.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "@vitejs/plugin-react": "latest",
+    "bini-deploy": "latest",
+    "bini-env": "latest",
+    "bini-export": "latest",
+    "oxfmt": "latest",
+    "oxlint": "latest",
+    "tailwindcss": "latest",
+    "typescript": "^6.0.0",
+    "vite": "latest"
+  }
+}
