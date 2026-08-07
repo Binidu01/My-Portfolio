@@ -1269,7 +1269,7 @@ export default function Home() {
                   <RollingButton 
                     text="View CV" 
                     ref={getStartedRef}
-                    onClick={() => window.open('https://drive.google.com/file/d/1wqcN9xYj-VY19v-41WFrYT_h3u60Jzpf/view?usp=sharing', '_blank')}
+                    onClick={() => window.open('https://drive.google.com/file/d/1eiZGj7b3rJFUTtpXSCDfTF8AFtb1x0UC/view?usp=sharing', '_blank')}
                   />
                 </div>
               </motion.div>
