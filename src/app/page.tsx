@@ -1267,8 +1267,9 @@ export default function Home() {
                     I created Bini.js, a React framework that enables developers to ship apps across web, desktop, and mobile from a single codebase with zero boilerplate.
                   </motion.p>
                   <RollingButton 
-                    text="Get Started" 
+                    text="View CV" 
                     ref={getStartedRef}
+                    onClick={() => window.open('https://drive.google.com/file/d/1wqcN9xYj-VY19v-41WFrYT_h3u60Jzpf/view?usp=sharing', '_blank')}
                   />
                 </div>
               </motion.div>
