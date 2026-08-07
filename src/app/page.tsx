@@ -573,7 +573,7 @@ const NavToggleButton: React.FC<{ isOpen: boolean; onClick: () => void }> = ({ i
   );
 };
 
-// Section list - UPDATED: No auto-close on navigation
+// Section list - UPDATED: Added Home link, no auto-close on navigation
 const NavSectionList: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
   const sections = [
     { name: 'Home', href: '#home' },
@@ -584,35 +584,27 @@ const NavSectionList: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
     { name: 'Contact', href: '#contact' }
   ];
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const targetId = href.replace('#', '');
-
-    if (targetId === 'home') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      const element = document.getElementById(targetId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
+  const scrollTo = (href: string) => {
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+      // REMOVED: onNavigate() - no longer closes the menu
     }
-    // REMOVED: onNavigate() - no longer closes the menu
   };
 
   return (
     <div className="flex flex-col gap-1.5 px-3 md:px-5 pb-3 pt-0.5">
-      {sections.map((section) => (
-        <motion.a
+      {sections.map((section, i) => (
+        <motion.button
           key={section.name}
-          href={section.href}
-          onClick={(e) => handleClick(e, section.href)}
+          onClick={() => scrollTo(section.href)}
           className="px-4 md:px-6 py-[5px] md:py-[7px] rounded-2xl text-left font-semibold text-sm md:text-base"
           style={{ backgroundColor: '#faf7f3', color: '#111111' }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
           <RollingText text={section.name} />
-        </motion.a>
+        </motion.button>
       ))}
     </div>
   );
@@ -1034,13 +1026,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#f0ede8] relative">
-      {/* Global fix: keep fixed navbar from covering scroll targets */}
-      <style>{`
-        section[id] {
-          scroll-margin-top: 90px;
-        }
-      `}</style>
-
       {/* Fixed Navbar - Always visible */}
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-center px-3 md:px-4 py-3 md:py-4">
         <div
@@ -1149,6 +1134,7 @@ export default function Home() {
                       textTransform: 'none',
                       display: 'block',
                       whiteSpace: 'nowrap',
+                      marginTop: index === 0 ? '25px' : '0', // Added 25px margin-top for SOFTWARE
                     }}
                     initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
                     animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
@@ -1397,7 +1383,7 @@ export default function Home() {
           </div>
         </motion.section>
 
-        {/* Contact Section */}
+        {/* Contact Section - Icon Only Buttons with Simple Icons WhatsApp */}
         <motion.section 
           id="contact" 
           className="w-full py-10 md:py-14"
@@ -1425,7 +1411,7 @@ export default function Home() {
                 className="flex flex-wrap gap-3 md:gap-4 justify-center mb-6 md:mb-8"
                 variants={staggerContainer}
               >
-                {/* Email Button */}
+                {/* Email Button - Opens Gmail with pre-filled address */}
                 <motion.a
                   href="mailto:rbinidu@gmail.com?subject=Hello%20Binidu&body=Hi%20Binidu%2C%20I%20would%20like%20to%20connect%20with%20you."
                   target="_blank"
@@ -1438,7 +1424,7 @@ export default function Home() {
                   <Mail className="w-5 h-5 md:w-6 md:h-6" />
                 </motion.a>
                 
-                {/* WhatsApp Button */}
+                {/* WhatsApp Button with Simple Icons WhatsApp */}
                 <motion.a
                   href="https://wa.me/94703850455"
                   target="_blank"
@@ -1495,7 +1481,7 @@ export default function Home() {
         </motion.section>
       </div>
 
-      {/* Footer with fixed quick links */}
+      {/* Footer - CORRECTED QUICK LINKS */}
       <motion.footer 
         className="w-full bg-black text-white relative overflow-hidden"
         initial="hidden"
