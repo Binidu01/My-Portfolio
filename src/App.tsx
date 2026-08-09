@@ -9,7 +9,6 @@ import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 const Layout0 = React.lazy(() => import('@/app/layout'));
 const Loading0 = React.lazy(() => import('@/app/loading'));
 const Page0 = React.lazy(() => import('@/app/page'));
-const Page1 = React.lazy(() => import('@/app/about'));
 const NotFound0 = React.lazy(() => import('@/app/not-found'));
 
 // ─── Error Boundary ───────────────────────────────────────────────────────────
@@ -73,7 +72,6 @@ export function AppRoutes() {
     <Routes>
         <Route element={<><TitleSetter title={"Binidu Ransinghe"} /><Suspense fallback={<Loading0 />}><ErrorBoundary><Layout0><Outlet /></Layout0></ErrorBoundary></Suspense></>}>
           <Route path="/" element={<Suspense fallback={<Loading0 />}><ErrorBoundary><Page0 /></ErrorBoundary></Suspense>} />
-          <Route path="/about" element={<Suspense fallback={<Loading0 />}><ErrorBoundary><Page1 /></ErrorBoundary></Suspense>} />
         </Route>
         <Route path="*" element={          <><TitleSetter title={"Binidu Ransinghe"} /><Layout0>            <Suspense fallback={<Loading0 />}><ErrorBoundary><NotFound0 /></ErrorBoundary></Suspense></Layout0></>} />
     </Routes>
