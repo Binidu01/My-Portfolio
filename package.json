@@ -19,7 +19,7 @@
     "bini-overlay": "latest",
     "bini-router": "2.0.2",
     "bini-server": "latest",
-    "bini-ssg": "1.0.0",
+    "bini-ssg": "1.0.1",
     "deploy": "^1.1.0",
     "framer-motion": "^12.43.0",
     "hono": "latest",
