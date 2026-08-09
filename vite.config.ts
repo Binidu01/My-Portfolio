@@ -12,6 +12,7 @@ export default defineConfig(({ command, mode }) => {
   const isBuild = command === 'build';
   const port = parseInt(env['PORT'] ?? '3000', 10);
 
+  // Tauri detection via environment variable (set by cross-env in package.json)
   const isTauri = env['TAURI'] === 'true' || process.env.TAURI === 'true';
   const isCodespace = !!env['CODESPACE_NAME'];
 
@@ -33,12 +34,12 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       tailwindcss(),
       react(),
-      ...(biniroute() as any),  // ← Type assertion to bypass deep type checking
+      biniroute(),
       biniOverlay(),
       biniEnv(),
       biniExport(),
       biniSSG(),
-    ] as any[],  // ← Also cast the whole array
+    ],
 
     server: {
       port,
@@ -88,6 +89,7 @@ export default defineConfig(({ command, mode }) => {
           chunkFileNames: 'js/[name]-[hash].js',
           entryFileNames: 'js/[name]-[hash].js',
           assetFileNames: (assetInfo) => {
+            // Type-safe way to get the asset name
             let name = '';
             if (assetInfo.names && assetInfo.names.length > 0) {
               name = assetInfo.names[0];
@@ -95,6 +97,7 @@ export default defineConfig(({ command, mode }) => {
               name = assetInfo.name;
             }
             
+            // If still empty, use a default
             if (!name) {
               return 'assets/[name]-[hash][extname]';
             }
@@ -112,7 +115,9 @@ export default defineConfig(({ command, mode }) => {
             return 'assets/[name]-[hash][extname]';
           },
         },
+        // Silence harmless warnings - fixed type safety
         onwarn(warning, warn) {
+          // Ignore specific warnings with safe access
           const ignoreCodes = [
             'MODULE_EXTERNALIZED',
             'INEFFECTIVE_DYNAMIC_IMPORT',
@@ -124,12 +129,14 @@ export default defineConfig(({ command, mode }) => {
             'dynamic import will not move module',
           ];
           
+          // Safe check for warning.code
           const code = warning.code || '';
           const message = warning.message || '';
           
           if (ignoreCodes.includes(code)) return;
           if (ignoreMessages.some(msg => message.includes(msg))) return;
           
+          // Warn about everything else
           warn(warning);
         },
       },
