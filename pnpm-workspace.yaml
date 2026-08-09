@@ -1,2 +1,6 @@
 allowBuilds:
+  esbuild: true
   puppeteer: true
+minimumReleaseAgeExclude:
+  - bini-router@2.0.1 || 2.0.2
+  - bini-ssg@1.0.0

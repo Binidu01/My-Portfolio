@@ -9,6 +9,7 @@ import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 const Layout0 = React.lazy(() => import('@/app/layout'));
 const Loading0 = React.lazy(() => import('@/app/loading'));
 const Page0 = React.lazy(() => import('@/app/page'));
+const Page1 = React.lazy(() => import('@/app/about'));
 const NotFound0 = React.lazy(() => import('@/app/not-found'));
 
 // ─── Error Boundary ───────────────────────────────────────────────────────────
@@ -32,7 +33,6 @@ class ErrorBoundary extends React.Component<
   override render() {
     if (this.state.error) {
       const reset = () => this.setState({ error: null });
-      // A folder's own error.tsx always wins over the built-in fallback.
       if (this.props.fallback) {
         const Fallback = this.props.fallback;
         return <Fallback error={this.state.error} reset={reset} />;
@@ -58,21 +58,34 @@ class ErrorBoundary extends React.Component<
 
 
 function TitleSetter({ title }: { title: string }) {
-  React.useEffect(() => { document.title = title; }, [title]);
+  React.useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.title = title;
+    }
+  }, [title]);
   return null;
 }
 
 
 
-export default function App() {
+export function AppRoutes() {
   return (
-    <BrowserRouter basename={"/"}>
-      <Routes>
+    <Routes>
         <Route element={<><TitleSetter title={"Binidu Ransinghe"} /><Suspense fallback={<Loading0 />}><ErrorBoundary><Layout0><Outlet /></Layout0></ErrorBoundary></Suspense></>}>
           <Route path="/" element={<Suspense fallback={<Loading0 />}><ErrorBoundary><Page0 /></ErrorBoundary></Suspense>} />
+          <Route path="/about" element={<Suspense fallback={<Loading0 />}><ErrorBoundary><Page1 /></ErrorBoundary></Suspense>} />
         </Route>
         <Route path="*" element={          <><TitleSetter title={"Binidu Ransinghe"} /><Layout0>            <Suspense fallback={<Loading0 />}><ErrorBoundary><NotFound0 /></ErrorBoundary></Suspense></Layout0></>} />
-      </Routes>
+    </Routes>
+  );
+}
+
+export const basename = "/";
+
+export default function App() {
+  return (
+    <BrowserRouter basename={basename}>
+      <AppRoutes />
     </BrowserRouter>
   );
 }

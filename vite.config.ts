@@ -5,14 +5,13 @@ import { biniOverlay } from 'bini-overlay';
 import { biniEnv } from 'bini-env';
 import { biniExport } from 'bini-export';
 import tailwindcss from '@tailwindcss/vite';
-
+import { biniSSG } from 'bini-ssg'
 
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const isBuild = command === 'build';
   const port = parseInt(env['PORT'] ?? '3000', 10);
 
-  // Tauri detection via environment variable (set by cross-env in package.json)
   const isTauri = env['TAURI'] === 'true' || process.env.TAURI === 'true';
   const isCodespace = !!env['CODESPACE_NAME'];
 
@@ -34,11 +33,12 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       tailwindcss(),
       react(),
-      biniroute(),
+      ...(biniroute() as any),  // ← Type assertion to bypass deep type checking
       biniOverlay(),
       biniEnv(),
       biniExport(),
-    ],
+      biniSSG(),
+    ] as any[],  // ← Also cast the whole array
 
     server: {
       port,
@@ -88,8 +88,19 @@ export default defineConfig(({ command, mode }) => {
           chunkFileNames: 'js/[name]-[hash].js',
           entryFileNames: 'js/[name]-[hash].js',
           assetFileNames: (assetInfo) => {
-            const name = assetInfo.names?.[0] ?? assetInfo.name ?? '';
-            const ext = name.split('.').pop() ?? '';
+            let name = '';
+            if (assetInfo.names && assetInfo.names.length > 0) {
+              name = assetInfo.names[0];
+            } else if (assetInfo.name) {
+              name = assetInfo.name;
+            }
+            
+            if (!name) {
+              return 'assets/[name]-[hash][extname]';
+            }
+            
+            const ext = name.split('.').pop()?.toLowerCase() || '';
+            
             if (/png|jpe?g|gif|svg|webp|avif/.test(ext)) {
               return 'assets/images/[name]-[hash][extname]';
             }
@@ -100,6 +111,26 @@ export default defineConfig(({ command, mode }) => {
             if (ext === 'json') return 'data/[name]-[hash][extname]';
             return 'assets/[name]-[hash][extname]';
           },
+        },
+        onwarn(warning, warn) {
+          const ignoreCodes = [
+            'MODULE_EXTERNALIZED',
+            'INEFFECTIVE_DYNAMIC_IMPORT',
+            'UNRESOLVED_IMPORT',
+          ];
+          const ignoreMessages = [
+            'stream',
+            'externalized',
+            'dynamic import will not move module',
+          ];
+          
+          const code = warning.code || '';
+          const message = warning.message || '';
+          
+          if (ignoreCodes.includes(code)) return;
+          if (ignoreMessages.some(msg => message.includes(msg))) return;
+          
+          warn(warning);
         },
       },
     },
@@ -116,6 +147,5 @@ export default defineConfig(({ command, mode }) => {
     optimizeDeps: {
       include: ['react', 'react-dom', 'react-router-dom'],
     },
-    types: ["vite/client"]
   };
 });
