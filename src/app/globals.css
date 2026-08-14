@@ -1,0 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+* { box-sizing: border-box; }
+html { font-family: 'Archivo', 'Archivo Placeholder', system-ui, -apple-system, 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
+body { line-height: 1.5; min-height: 100vh; margin: 0; }
+#root { min-height: 100vh; }
